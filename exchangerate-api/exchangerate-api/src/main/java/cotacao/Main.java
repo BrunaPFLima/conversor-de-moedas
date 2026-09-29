@@ -12,11 +12,18 @@ import com.google.gson.Gson;
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         // Criação do cliente HTTP
+        // A chave da API vem da variável de ambiente EXCHANGE_API_KEY
+        String apiKey = System.getenv("EXCHANGE_API_KEY");
+        if (apiKey == null || apiKey.isBlank()) {
+            System.out.println("Defina a variável de ambiente EXCHANGE_API_KEY com sua chave da ExchangeRate-API.");
+            return;
+        }
+
         HttpClient client = HttpClient.newHttpClient();
 
         // Configuração da requisição HTTP
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://v6.exchangerate-api.com/v6/2480e22ab67e07d2ea8d7bab/latest/USD"))
+                .uri(URI.create("https://v6.exchangerate-api.com/v6/" + apiKey + "/latest/USD"))
                 .build();
 
         // Enviar a requisição e obter a resposta
@@ -24,7 +31,6 @@ public class Main {
 
         // Captura do corpo da resposta
         String json = response.body();
-        System.out.println("JSON recebido: " + json);  // Imprimir para debug
 
         // Usando Gson para deserializar a resposta
         Gson gson = new Gson();
